@@ -43,9 +43,15 @@ public class ImplMetadata
 
         Manifest manifest = findManifestFor(this.className);
 
-        vendor = fallback(manifest.getMainAttributes().getValue("Bundle-Name"),manifest.getMainAttributes().getValue("Bundle-Vendor"),manifest
-                .getMainAttributes().getValue("Implementation-Vendor"),UNKNOWN);
-        version = fallback(manifest.getMainAttributes().getValue("Bundle-Version"),manifest.getMainAttributes().getValue("Implementation-Version"),UNKNOWN);
+        vendor = fallback(
+                manifest.getMainAttributes().getValue("Bundle-Vendor"),
+                manifest.getMainAttributes().getValue("Implementation-Vendor"),
+                manifest.getMainAttributes().getValue("Bundle-Name"),
+                UNKNOWN);
+        version = fallback(
+                manifest.getMainAttributes().getValue("Bundle-Version"),
+                manifest.getMainAttributes().getValue("Implementation-Version"),
+                UNKNOWN);
     }
 
     private Manifest findManifestFor(String clazz)
@@ -129,11 +135,11 @@ public class ImplMetadata
         String ua = String.format("%s/%s",vendor,version);
 
         // Special HACK for broken tyrus implementation
-        if(className.contains(".tyrus."))
+        if (className.contains(".tyrus."))
         {
             ua = ua.replace(' ','_');
         }
-        
+
         // All other implementations
         final String UNSAFE = " %$&+,/:;=?@<>#%";
         StringBuilder ret = new StringBuilder();
