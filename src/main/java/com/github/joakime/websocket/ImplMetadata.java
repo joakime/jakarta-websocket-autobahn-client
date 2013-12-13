@@ -132,12 +132,12 @@ public class ImplMetadata
 
     public String toSafeUserAgent()
     {
-        String ua = String.format("%s/%s",vendor,version);
+        String ua = String.format("%s / %s / %s",vendor,className,version);
 
         // Special HACK for broken tyrus implementation
         if (className.contains(".tyrus."))
         {
-            ua = ua.replace(' ','_');
+            ua = ua.replace(' ','+');
         }
 
         // All other implementations
