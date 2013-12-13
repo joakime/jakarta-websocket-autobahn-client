@@ -135,5 +135,46 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>tomcat</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>tomcat-websocket</artifactId>
+          <version>8.0.0-RC5</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>tomcat-coyote</artifactId>
+          <version>8.0.0-RC5</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-showversion</argument>
+                <argument>-Xmx512m</argument>
+                <argument>-Xms512m</argument>
+                <argument>-Xmn256m</argument>
+                <argument>-XX:+PrintCommandLineFlags</argument>
+                <argument>-verbose:gc</argument>
+                <argument>-XX:+UseParallelOldGC</argument>
+                <argument>-XX:-UseAdaptiveSizePolicy</argument>
+                <argument>-cp</argument>
+                <classpath />
+                <argument>com.github.joakime.websocket.TestClient</argument>
+                <argument>ws://localhost:9001/</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
