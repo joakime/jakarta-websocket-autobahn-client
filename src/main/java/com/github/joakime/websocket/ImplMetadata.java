@@ -7,10 +7,10 @@
 //  and Apache License v2.0 which accompanies this distribution.
 //
 //      The Eclipse Public License is available at
-//      http://www.eclipse.org/legal/epl-v10.html
+//      http://opensource.org/licenses/EPL-1.0
 //
 //      The Apache License v2.0 is available at
-//      http://www.opensource.org/licenses/apache2.0.php
+//      http://opensource.org/licenses/Apache-2.0
 //
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
