@@ -18,7 +18,14 @@
 
 package com.github.joakime.websocket;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Get the metadata for the archive.
@@ -34,17 +41,52 @@ public class ImplMetadata
     {
         this.className = clazz.getName();
 
-        Package pkg = clazz.getPackage();
-        if (pkg != null)
+        Manifest manifest = findManifestFor(this.className);
+
+        vendor = fallback(manifest.getMainAttributes().getValue("Bundle-Name"),manifest.getMainAttributes().getValue("Bundle-Vendor"),manifest
+                .getMainAttributes().getValue("Implementation-Vendor"),UNKNOWN);
+        version = fallback(manifest.getMainAttributes().getValue("Bundle-Version"),manifest.getMainAttributes().getValue("Implementation-Version"),UNKNOWN);
+    }
+
+    private Manifest findManifestFor(String clazz)
+    {
+        String resourceName = '/' + clazz.replace('.','/') + ".class";
+        URL url = this.getClass().getResource(resourceName);
+        System.err.printf("Manifest: %s => %s%n",resourceName,url);
+
+        Manifest ret = new Manifest();
+        Pattern pat = Pattern.compile("^jar:(file:/[^!]*)!/.*$");
+
+        if (url == null)
         {
-            vendor = fallback(pkg.getImplementationVendor());
-            version = fallback(pkg.getImplementationVersion());
+            return ret;
         }
-        else
+
+        try
         {
-            vendor = UNKNOWN;
-            version = UNKNOWN;
+            Matcher match = pat.matcher(url.toURI().toASCIIString());
+            if (!match.matches())
+            {
+                return ret;
+            }
+
+            URI jarUri = new URI(match.group(1));
+
+            try (JarFile jar = new JarFile(new File(jarUri)))
+            {
+                Manifest manifest = jar.getManifest();
+                if (manifest != null)
+                {
+                    ret = manifest;
+                }
+            }
         }
+        catch (Throwable t)
+        {
+            t.printStackTrace();
+        }
+
+        return ret;
     }
 
     public ImplMetadata(Object obj)
@@ -59,13 +101,17 @@ public class ImplMetadata
         out.printf("       Version: %s%n",version);
     }
 
-    private String fallback(String val)
+    private String fallback(String... vals)
     {
-        if (val == null)
+        for (String val : vals)
         {
-            return UNKNOWN;
+            if (val != null)
+            {
+                return val;
+            }
         }
-        return val;
+
+        return UNKNOWN;
     }
 
     public String getVendor()

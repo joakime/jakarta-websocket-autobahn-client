@@ -68,9 +68,7 @@ public class TestClient
 
     public TestClient()
     {
-        System.err.printf("javax.websocket / autobahn testsuite / client%n");
-        ImplMetadata meta = new ImplMetadata(this.getClass());
-        meta.dump(System.err);
+        System.err.println("javax.websocket client for Autobahn WebSocket Protocol Testsuite");
     }
 
     public void parse(String[] args)
@@ -159,7 +157,7 @@ public class TestClient
         System.err.println("Running test suite ...");
         System.err.printf("Using Fuzzing Server at %s%n",wsURI);
         System.err.printf("User Agent: %s%n",userAgent);
-
+        
         if (caseNumbers.size() >= 1)
         {
             int caseCount = caseNumbers.size();
