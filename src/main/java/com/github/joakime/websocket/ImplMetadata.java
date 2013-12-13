@@ -126,8 +126,16 @@ public class ImplMetadata
 
     public String toSafeUserAgent()
     {
-        final String UNSAFE = " %$&+,/:;=?@<>#%";
         String ua = String.format("%s/%s",vendor,version);
+
+        // Special HACK for broken tyrus implementation
+        if(className.contains(".tyrus."))
+        {
+            ua = ua.replace(' ','_');
+        }
+        
+        // All other implementations
+        final String UNSAFE = " %$&+,/:;=?@<>#%";
         StringBuilder ret = new StringBuilder();
         for (char c : ua.toCharArray())
         {
